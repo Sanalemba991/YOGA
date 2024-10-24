@@ -61,48 +61,23 @@ client
       const result = await classesCollection.find().toArray();
       res.send(result);
     });
-    app.patch("/change-status/:id", async (req, res) => {
+    app.patch('/change-status/:id',async (req, res) => {
       const id = req.params.id;
-      const { status, reason } = req.body;
-    
-      // Validate the input
-      if (!status) {
-        return res.status(400).send("Status is required.");
-      }
-    
+      const status = req.body.status;
+   
+      const reason = req.body.reason;
       const filter = { _id: new ObjectId(id) };
+      
+      const options = { upsert: true };
       const updateDoc = {
-        $set: {
-          status: status,
-          reason: reason,
-        },
-      };
-    
-      try {
-        // Perform the update operation
-        const result = await classesCollection.updateOne(filter, updateDoc);
-    
-        // Check if any document was matched
-        if (result.matchedCount === 0) {
-          return res.status(404).send("Class not found.");
-        }
-    
-        // Retrieve the updated document
-        const updatedClass = await classesCollection.findOne(filter);
-        res.send(updatedClass); // Send the updated document back
-      } catch (error) {
-        console.error("Update error:", error);
-        res.status(500).send("Error updating class status.");
+          $set: {
+              status: status,
+              reason: reason
+          }
       }
-    });
-    
-    app.get('/approved-classes',async(req,res)=>{
-      const query={status:'Pending'};
-      const result= await classesCollection.find(query).toArray();
-      res.send(result)
-
-    })
-
+      const result = await classesCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+  })
     //get Single classes details
    // Get single class details
 app.get("/class/:id", async (req, res) => {
@@ -113,11 +88,31 @@ app.get("/class/:id", async (req, res) => {
     // Use findOne to retrieve a single document
     const result = await classesCollection.findOne(query);
 
-  
-
     res.send(result);
   
 });
+
+
+//update class details
+app.put('/update-class/:id',  async (req, res) => {
+  const id = req.params.id;
+  const updatedClass = req.body;
+  const filter = { _id: new ObjectId(id) };
+  const options = { upsert: true };
+  const updateDoc = {
+      $set: {
+          name: updatedClass.name,
+          description: updatedClass.description,
+          price: updatedClass.price,
+          availableSeats: parseInt(updatedClass.availableSeats),
+          videoLink: updatedClass.videoLink,
+          status: 'pending'
+      }
+  }
+  const result = await classesCollection.updateOne(filter, updateDoc, options);
+  res.send(result);
+})
+
 
     console.log("Successfully connected to MongoDB!");
   })
