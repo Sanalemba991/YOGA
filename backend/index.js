@@ -32,6 +32,13 @@ async function run() {
 
 
 
+app.post('/new-class', async (req, res) => {
+    const newClass = req.body;
+    //newClass.availableSeats = parseInt(newClass.availableSeats)
+    const result = await classesCollection.insertOne(newClass);
+    res.send(result);
+});
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
