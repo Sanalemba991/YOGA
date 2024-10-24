@@ -47,7 +47,15 @@ client
           res.status(500).send("Error inserting new class.");
         });
     });
-
+    app.get('/classes', async (req, res) => {
+        const query = { status: 'approved' };
+        const result = await classesCollection.find(query).toArray();
+        res.send(result);
+    })
+    app.get('/classes-manage', async (req, res) => {
+        const result = await classesCollection.find().toArray();
+        res.send(result);
+    })
    
     console.log("Successfully connected to MongoDB!");
   })
