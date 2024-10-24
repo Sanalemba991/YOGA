@@ -44,6 +44,7 @@ client
           res.status(500).send("Error inserting new class.");
         });
     });
+    //it should be editing part of pending will not shown managed classs at the youtube
     app.get('/classes', async (req, res) => {
       const query = { status: 'approved' };
       const result = await classesCollection.find(query).toArray();
@@ -57,6 +58,7 @@ client
       const result = await classesCollection.find(query).toArray();
       res.send(result);
     });
+    //all shown editing all shown editning  also it should be classes to the youtube
     app.get("/classes-manage", async (req, res) => {
       const result = await classesCollection.find().toArray();
       res.send(result);
@@ -106,7 +108,7 @@ app.put('/update-class/:id',  async (req, res) => {
           price: updatedClass.price,
           availableSeats: parseInt(updatedClass.availableSeats),
           videoLink: updatedClass.videoLink,
-          status: 'pending'
+          status: 'penidng'
       }
   }
   const result = await classesCollection.updateOne(filter, updateDoc, options);
