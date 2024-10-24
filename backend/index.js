@@ -103,6 +103,22 @@ client
 
     })
 
+    //get Single classes details
+   // Get single class details
+app.get("/class/:id", async (req, res) => {
+  const id = req.params.id; // Change this to get the correct parameter
+  const query = { _id: new ObjectId(id) };
+
+  
+    // Use findOne to retrieve a single document
+    const result = await classesCollection.findOne(query);
+
+  
+
+    res.send(result);
+  
+});
+
     console.log("Successfully connected to MongoDB!");
   })
   .catch((error) => {
