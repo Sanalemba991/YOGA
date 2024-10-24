@@ -52,10 +52,15 @@ client
         const result = await classesCollection.find(query).toArray();
         res.send(result);
     })
-    app.get('/classes-manage', async (req, res) => {
-        const result = await classesCollection.find().toArray();
+      // GET ALL CLASSES ADDED BY INSTRUCTOR
+      app.get('/classes/:email', async (req, res) => {
+        const email = req.params.email;
+        const query = { instructorEmail: email };
+        const result = await classesCollection.find(query).toArray();
         res.send(result);
     })
+    
+
    
     console.log("Successfully connected to MongoDB!");
   })
