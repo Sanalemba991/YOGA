@@ -1,66 +1,64 @@
-const express = require('express')
-require("dotenv").config(); 
-const app = express()
-const cors=require('cors');
-const port = process.env.PORT || 3500
+require("dotenv").config(); // Ensure this is at the top
 
-//middlewaew
+const express = require("express");
+const app = express();
+const port = process.env.PORT || 3000;
+const cors = require("cors");
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+const { MongoClient, ServerApiVersion } = require("mongodb");
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = `mongodb+srv://laitonjamsanalembameitei99:${process.env.DB_PASSWORD}@yoga-master.mc6jh.mongodb.net/?retryWrites=true&w=majority&appName=yoga-master`;
 
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    const database = client.db("yoga-master");
-    const userCollection = database.collection("users");
+client
+  .connect()
+  .then(() => {
+    const database = client.db("yoga-master"); // Replace with your database name
     const classesCollection = database.collection("classes");
-    const cartCollection = database.collection("cart");
-    const enrolledCollection = database.collection("enrolled");
-    const paymentCollection = database.collection("payments");
-    const appliedCollection = database.collection("applied");
-//class routes
+     // Connect the client to the server	(optional starting in v4.7)
+  
+     const userCollection = database.collection("users");
+    
+     const cartCollection = database.collection("cart");
+     const enrolledCollection = database.collection("enrolled");
+     const paymentCollection = database.collection("payments");
+     const appliedCollection = database.collection("applied"); // Replace with your collection name
 
+    app.post("/new-class", (req, res) => {
+      const newClass = req.body;
+      classesCollection
+        .insertOne(newClass)
+        .then((result) => {
+          res.status(201).send(result);
+        })
+        .catch((error) => {
+          console.error("Insert error:", error);
+          res.status(500).send("Error inserting new class.");
+        });
+    });
 
+   
+    console.log("Successfully connected to MongoDB!");
+  })
+  .catch((error) => {
+    console.error("Connection error:", error);
+  });
 
-app.post('/new-class', async (req, res) => {
-    const newClass = req.body;
-    //newClass.availableSeats = parseInt(newClass.availableSeats)
-    const result = await classesCollection.insertOne(newClass);
-    res.send(result);
+app.get("/", (req, res) => {
+  res.send("MongoDB Connected!");
 });
-
-
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
-
-
-app.get('/', (req, res) => {
-  res.send('MONGO OKAY')
-})
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  console.log(`Server listening on port ${port}`);
+});
