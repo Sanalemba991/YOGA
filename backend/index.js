@@ -115,9 +115,17 @@ app.put('/update-class/:id',  async (req, res) => {
   res.send(result);
 })
 //data Cart
-app.post('/add-to-cart', verifyJWT, async (req, res) => {
+app.post('/add-to-cart',  async (req, res) => {
   const newCartItem = req.body;
   const result = await cartCollection.insertOne(newCartItem);
+  res.send(result);
+}) 
+   app.get('/cart-item/:id',  async (req, res) => {
+  const id = req.params.id;
+  const email = req.query.email;
+  const query = { classId: id, userMail: email };
+  const projection = { classId: 1 };
+  const result = await cartCollection.findOne(query, { projection: projection });
   res.send(result);
 })
 
