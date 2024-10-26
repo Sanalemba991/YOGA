@@ -141,6 +141,9 @@ app.get('/cart/:email', async (req, res) => {
   res.send(result);  
 })
 
+//delete cart item
+app.delete('/delete-cart/id:',async(req,res))
+
 
     console.log("Successfully connected to MongoDB!");
   })
