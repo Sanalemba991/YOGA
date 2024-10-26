@@ -115,16 +115,11 @@ app.put('/update-class/:id',  async (req, res) => {
   res.send(result);
 })
 //data Cart
-
-app.post('/add-to-cart',async(req,res)=>{
-
-  const newCartItem= req.body.cartItem;
-  const result=await cartCollection.insertOne(newCartItem);
-res.send(result);
-
-});
-
-
+app.post('/add-to-cart', verifyJWT, async (req, res) => {
+  const newCartItem = req.body;
+  const result = await cartCollection.insertOne(newCartItem);
+  res.send(result);
+})
 
 
 
